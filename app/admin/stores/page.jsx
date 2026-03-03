@@ -4,15 +4,25 @@ import StoreInfo from "@/components/admin/StoreInfo"
 import Loading from "@/components/Loading"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
+import { useUser,useAuth } from "@clerk/nextjs"
+import axios from "axios"
 
 export default function AdminStores() {
+
+    const {user} = useUser()
+    const {getToken} = useAuth()
 
     const [stores, setStores] = useState([])
     const [loading, setLoading] = useState(true)
 
     const fetchStores = async () => {
-        setStores(storesDummyData)
-        setLoading(false)
+        try {
+            const token = await getToken()
+            const { data } = await axios.get("/api/admin/stores", { headers: { Authorization: `Bearer ${token}`}})
+            setStores(data.stores)
+        } catch (error) {
+            toast.error(error.response?.data?.error || error.message)
+        }
     }
 
     const toggleIsActive = async (storeId) => {
