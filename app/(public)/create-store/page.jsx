@@ -7,6 +7,7 @@ import Loading from "@/components/Loading"
 import { useUser, useAuth } from "@clerk/nextjs"
 import { useRouter } from "next/navigation"
 import axios from "axios"
+import { set } from "date-fns"
 
 export default function CreateStore() {
 
@@ -34,9 +35,33 @@ export default function CreateStore() {
     }
 
     const fetchSellerStatus = async () => {
-        // Logic to check if the store is already submitted
+        const token = await getToken()
+        try {
+            const { data } = await axios.get("/api/store/create", { headers: { Authorization: `Bearer ${token}`}})
+            if (["approved","rejected","pending"].includes(data.status)) {
+                setStatus(data.status)
+                setAlreadySubmitted(true)
+                switch (data.status) {
+                    case "approved":
+                        setMessage("Your store has been approved! You can now start adding products and manage your store from the dashboard.")
+                        setTimeout(() => router.push("/store"), 5000)
+                        break;
+                    case "rejected":
+                        setMessage("Your store request has been rejected. Please contact support for more information.")
+                        break;
+                    case "pending":
+                        setMessage("Your store request is pending, please wait for admin to approve your store.")
+                        break;
 
-
+                    default:
+                        break;                   
+                }
+            }else{
+                setAlreadySubmitted(false)
+            }    
+        } catch (error) {
+            toast.error(error?.response?.data?.error || error.message)
+        }
         setLoading(false)
     }
 
@@ -75,6 +100,7 @@ export default function CreateStore() {
 
             toast.dismiss()
             toast.success(data.message)
+            await fetchSellerStatus()
 
         } catch (error) {
             toast.dismiss()
@@ -83,8 +109,10 @@ export default function CreateStore() {
     }
 
     useEffect(() => {
-        fetchSellerStatus()
-    }, [])
+        if (user){
+            fetchSellerStatus()
+        } 
+    }, [user])
 
     if(!user){
         return(
