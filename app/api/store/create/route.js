@@ -46,7 +46,7 @@ export async function POST(request) {
         if (isUsernameTaken) {
             return NextResponse.json({ error: 'Username already taken' }, { status: 400 });
         }
-        
+
         //image upload to imagekit
         const buffer = Buffer.from(await image.arrayBuffer());
         const response = await imagekit.files.upload({
@@ -54,15 +54,14 @@ export async function POST(request) {
             fileName: image.name,
             folder: "logos"
         });
-
+        //optimize the image
         const optimizedImage = imagekit.helper.buildSrc({
-            // Make sure this matches your .env variable name
             urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT, 
-            src: response.filePath, // Use filePath from the upload response
+            src: response.filePath,
             transformation: [
                 {
                     width: 512,
-                    quality: "auto", // ImageKit handles 'auto' as 'q-auto'
+                    quality: "auto",
                     format: 'webp',
                 },
             ],
