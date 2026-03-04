@@ -4,16 +4,13 @@ import { NextResponse } from "next/server";
 import authSeller from "@/middlewares/authSeller";
 
 //get dashboard data for seller(total orders, total earnings, totle products)
-
 export async function GET(request) {
     try {
         const { userId } = getAuth(request);
         const storeId = await authSeller(userId);
 
         //get all orders for seller
-        const orders = await prisma.order.findMany({
-            where: {product: {storeId}}
-        });
+        const orders = await prisma.order.findMany({where: {storeId}});
 
         //get all products with ratings for seller
         const products = await prisma.product.findMany({
