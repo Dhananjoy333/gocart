@@ -3,6 +3,7 @@ import imagekit from '@/configs/imageKit';
 import { toFile } from "@imagekit/nodejs";
 import authSeller from '@/middlewares/authSeller';
 import { getAuth } from "@clerk/nextjs/server";
+import prisma from '@/lib/prisma';
 
 //Add new product
 export async function POST(request) {
