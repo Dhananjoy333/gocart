@@ -22,7 +22,9 @@ const AdminLayout = ({ children }) => {
             const {data} = await axios.get("/api/admin/is-admin", { headers: { Authorization: `Bearer ${token}`}})
             setIsAdmin(data.isAdmin)
         }catch (error) {
-            console.error(error)
+            if (error.response?.status !== 401) {
+                console.error(error)
+            }
         }finally {
             setLoading(false)
         }
