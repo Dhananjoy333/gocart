@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import authSeller from "@/middlewares/authSeller";
 
-//get dashboard data for seller(total orders, total earnings, totle products)
+//get dashboard data for seller(total orders, total earnings, total products)
 export async function GET(request) {
     try {
         const { userId } = getAuth(request);
@@ -24,7 +24,7 @@ export async function GET(request) {
         const dashboardData = {
             ratings,
             totalOrders: orders.length,
-            totalEarnings: Math.round(orders.reduce((acc, order) => acc + order.totalPrice, 0)),
+            totalEarnings: Math.round(orders.reduce((acc, order) => acc + order.total, 0)),
             totalProducts: products.length
         }
 
