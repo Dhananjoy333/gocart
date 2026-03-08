@@ -4,8 +4,9 @@ import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { MailIcon, MapPinIcon } from "lucide-react"
 import Loading from "@/components/Loading"
+import toast from "react-hot-toast"
 import Image from "next/image"
-import { dummyStoreData, productDummyData } from "@/assets/assets"
+import axios from "axios"
 
 export default function StoreShop() {
 
@@ -15,8 +16,13 @@ export default function StoreShop() {
     const [loading, setLoading] = useState(true)
 
     const fetchStoreData = async () => {
-        setStoreInfo(dummyStoreData)
-        setProducts(productDummyData)
+        try {
+            const {data} = await axios.get(`/api/store/data?username=${username}`)
+            setStoreInfo(data.store)
+            setProducts(data.store.Product)
+        } catch (error) {
+            toast.error(error?.response?.data?.error || error.message)
+        }
         setLoading(false)
     }
 
