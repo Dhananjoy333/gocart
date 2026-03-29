@@ -83,7 +83,7 @@ const Navbar = () => {
                             </div>
                         ):(
                             <button className="px-7 py-1.5 bg-indigo-500 hover:bg-indigo-600 text-sm transition text-white rounded-full">
-                            <Link>Login</Link>
+                            <Link href={'/sign-in'}>Login</Link>
                             </button>
                         )}
                         

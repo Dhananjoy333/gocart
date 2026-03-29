@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = 'force-dynamic';
 import BestSelling from "@/components/BestSelling";
 import Hero from "@/components/Hero";
 import Newsletter from "@/components/Newsletter";
